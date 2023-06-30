@@ -34,10 +34,8 @@ h1 {
 
 #board {
     display: grid;
-    /* grid-area: 1/1/4/4; */
-    display: grid;
-    grid-template-columns: repeat(3, 10vmin);
-    grid-template-rows: repeat(3, 10vmin);
+    grid-template-columns: repeat(3, 15vmin);
+    grid-template-rows: repeat(3, 15vmin);
     margin-top: 5vmin;
     /* border: 10px solid #d02525 inset;
   box-shadow: 5 px green inset; */
@@ -51,7 +49,6 @@ h1 {
     /* grid-template-columns: 10px, 10px, 10px;
   grid-template-rows: 10px, 10px, 10px; */
     border: 0.1vmin solid #413e3e;
-    /* grid-gap: 1px; */
 }
 
 button {
@@ -62,9 +59,17 @@ button {
     border: 0.1vmin solid grey;
     color: gray;
     font-family: 'Lacquer', cursive;
+    /* display: flex; */
 }
 
 button:hover {
     color: white;
     background-color: black;
+}
+
+#message {
+    margin-top: 0;
+    margin-bottom: 5vmin;
+    color: grey;
+
 }

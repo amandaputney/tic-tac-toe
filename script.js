@@ -1,14 +1,10 @@
+
+
 // 1) Define required constants:
 //   1.1) Define a colors object with keys of 'null' (when the square is empty), and players 1 & -1. The value assigned to each key represents the color to display for an empty square (null), player 1 and player -1.
 //   1.2) Define the 8 possible winning combinations, each containing three indexes of the board that make a winner if they hold the same player value.
 
-/*----- constants -----*/
-
-const COLORS = {
-    '0': 'white',
-    '1': 'teal', //player X
-    '-1': 'gold' // player O
-}
+/*----- CONSTANTS ------------------------------------------*/
 
 
 
@@ -17,22 +13,17 @@ const COLORS = {
 //   2.2) Use a turn variable to remember whose turn it is.
 //   2.3) Use a winner variable to represent three different possibilities - player that won, a tie, or game in play.
 
-/*----- state variables -----*/
+/*----- STATE VARIABLES ----------------------------------------*/
 
-let board;
-let turn;  // 1 or 01
-let winner;   //null = no winner; 1 or -1 winner; 'T' = tie
-
+let game;
 
 // 3) Store elements on the page that will be accessed in code more than once in variables to make code more concise, readable and performant:
 //   3.1) Store the 9 elements that represent the squares on the page.
 
-/*----- cached elements  -----*/
+/*----- CACHED ELEMENTS  --------------------------------------------*/
 
-
-
-
-
+const boardEl = document.getElementById('board');
+const msgEl = document.getElementById('message');
 
 
 // 4) Upon loading the app should:
@@ -51,7 +42,12 @@ let winner;   //null = no winner; 1 or -1 winner; 'T' = tie
 //       4.2.2.3) Otherwise, render a congratulatory message to which player has won - use the color name for the player, converting it to uppercase.
 //   4.3) Wait for the user to click a square
 
-/*----- event listeners -----*/
+/*----- EVENT LISTENERS ------------------------------------------------*/
+
+// let restartGame = document.querySelector('button');
+// restartGame.addEventListener('click', initialize);
+
+document.querySelector('button').addEventListener('click', initialize);
 
 
 // 5) Handle a player clicking a square:
@@ -72,48 +68,111 @@ let winner;   //null = no winner; 1 or -1 winner; 'T' = tie
 //   5.8) All state has been updated, so render the state to the page (step 4.2).
 
 
-/*----- FUNCTIONS -----*/
-init();
+/*----- CLASSES ----------------------------------------------------------*/
+
+class Square {
+    constructor(domElement) {
+        this.domElement = domElement;
+        this.value = null;
+    }
+
+    static renderLookup =
+        {
+            '1': 'black',
+            '-1': 'gold',
+            'null': '#f1e9e9',
+        };
+
+    render() {
+        this.domElement.style.backgroundColor = Square.renderLookup[this.value];
+    }
+
+}
 
 
-//intialize all state
-function init() {
-    // //turn to the left 90 degrees to visualize location of cells in board
-    board = [
-        [0, 0, 0], //first column, column 0
-        [0, 0, 0], //second column, column 1
-        [0, 0, 0], //first column, column 2
+class TicTacToeGame {
+    constructor(boardElement, messageElement) {
+        //properties
+        this.boardElement = boardElement;
+        this.messageElement = messageElement;
+        //square property needs to be an array of divs
+        this.squareEls = [...boardElement.querySelectorAll('div')];
+        this.boardElement.addEventListener('click', (evt) => {
+            // Obtain index of square
+            const idx = this.squareEls.indexOf(evt.target);
+            // Guards
+            if (
+                // Didn't click <div> in grid
+                idx === -1 ||
+                // Square already taken
+                this.squares[idx].value ||
+                // Game over
+                this.winner
+            ) return;
+            // Update the square object
+            this.squares[idx].value = this.turn;
+            // Update (turn, winner)
+            this.turn *= -1;
+            this.winner = this.getWinner();
+            // Render updated state
+            this.render();
+        });
+    }
+
+
+    static winningCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
     ];
 
-    board = [
-        [0, 1, 2], //first column, column 0
-        [3, 4, 5], //second column, column 1
-        [6, 7, 8] //first column, column 2
-  // ];
-  //who's turn it is when game loads
-  turn = 1;
+    //new method
+    play() {
+        this.turn = 1;
+        this.winner = null;
+        this.squares = this.squareEls.map(el => new Square(el));
+        this.render();
+    }
 
-        winner = null;
-        render();
+    // define render method called in play method
+    render() {
+        // Square objects are responsible for rendering themselves
+        this.squares.forEach(square => square.render());
+        // NEW CODE BELOW
+        if (this.winner === 'T') {
+            this.messageElement.innerHTML = 'Rats, another tie!';
+        } else if (this.winner) {
+            this.messageElement.innerHTML = `Player ${this.winner === 1 ? 1 : 2} Wins!`;
+        } else {
+            this.messageElement.innerHTML = `Player ${this.turn === 1 ? 1 : 2}'s Turn`;
+        }
+    }
+    getWinner() {
+        // Shortcut variable that replaces board array with sqaure objects
+        const combos = TicTacToeGame.winningCombos;
+        for (let i = 0; i < combos.length; i++) {
+            if (Math.abs(this.squares[combos[i][0]].value + this.squares[combos[i][1]].value + this.squares[combos[i][2]].value) === 3)
+                return this.squares[combos[i][0]].value;
+        }
+        // Array.prototype.some iterator method!
+        if (this.squares.some(square => square.value === null)) return null;
+        return 'T';
+    }
+}
+/*----- FUNCTIONS --------------------------------------------------------------*/
+
+initialize();
+
+function initialize() {
+    game = new TicTacToeGame(boardEl, msgEl);
+    game.play();
 }
 
-function render() {
-    renderBoard();
-    renderMessage();
-    renderControls(); //hide and show play again button
-}
-
-function renderBoard() {
-    board.forEach(function (colArr, colIdx) {
-        //iterates over the cells in the current column represented by colArr
-        colArr.forEach(function (squareVal, rowIdx) {
-            const squareId = `${colIdx} ${rowIdx}`
-            const squareDiv = document.getElementById(squareId);
-            console.log(squareDiv);
-            sqaureDiv.style.backgroundColor = COLORs['blue';
-        });
-    });  //iterate through all elements board array state to select the proer div
-}
 
 
 //     4.2.1) Render the board:
@@ -122,45 +181,9 @@ function renderBoard() {
 //         4.3.1.1.3) Set the background color of the current element by using the value as a key on the colors lookup object (constant).
 
 
-function renderBoard() {
-    board.forEach(function (column) {
-        //iterates over the cells in the current column represented by colArr
-        column.forEach(function (squareNum) {
-            const squareId = `square${squareNum}`
-            const squareEl = document.getElementById(squareId);
-            console.log(squareEl);
-            squareEl.style.backgroundColor = COLORS[squareNum];
-        });
-    });  //iterate through all elements board array state to select the proer div
-}
-
-function renderBoard() {
-    board.forEach(function (column) {
-        //iterates over the cells in the current column represented by colArr
-        function findAllIndex(column, element) {
-            indices = [];
-            return indices;
-            console.log(indices);
-        })
-};
-
-
-column.forEach(function (squareNum) {
-    const squareId = `square${squareNum}`
-    const squareEl = document.getElementById(squareId);
-    console.log(squareEl);
-    squareEl.style.backgroundColor = COLORS[squareNum];
-});
-  });  //iterate through all elements board array state to select the proer div
-}
-
-function renderMessage() {
-
-}
-
-function renderControls() {
-
-}
-
 // 6) Handle a player clicking the replay button:
 //   6.1) Do steps 4.1 (initialize the state variables) and 4.2 (render).
+
+
+
+///Used Jim Clarks Class lecture and Connect Four example to create this game
