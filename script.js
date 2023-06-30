@@ -35,6 +35,7 @@ const msgEl = document.getElementById('message');
 //     4.2.1) Render the board:
 //       4.2.1.1) Loop over each of the 9 elements that represent the squares on the page, and for each iteration:
 //         4.2.1.1.2) Use the index of the iteration to access the mapped value from the board array.
+
 //         4.3.1.1.3) Set the background color of the current element by using the value as a key on the colors lookup object (constant).
 //     4.2.2) Render a message:
 //       4.2.2.1) If winner has a value other than null (game still in progress), render whose turn it is - use the color name for the player, converting it to upper case.
@@ -82,13 +83,26 @@ class Square {
             '-1': 'gold',
             'null': '#f1e9e9',
         };
+    // {
+    //     '1': "X",
+    //     '-1': "O",
+    //     'null': '#f1e9e9',
+    // };
+
+    // render() {
+    //     this.domElement.style.backgroundColor = Square.renderLookup[this.value];
+    // }
 
     render() {
-        this.domElement.style.backgroundColor = Square.renderLookup[this.value];
+        this.domElement.style.sy = Square.renderLookup[this.value];
+    }
+}
+class SymbolSquare extends Square {
+    constructor() {
+
     }
 
 }
-
 
 class TicTacToeGame {
     constructor(boardElement, messageElement) {
@@ -112,6 +126,7 @@ class TicTacToeGame {
             // Update the square object
             this.squares[idx].value = this.turn;
             // Update (turn, winner)
+            // Flip turns by multiplying turn by -1 
             this.turn *= -1;
             this.winner = this.getWinner();
             // Render updated state
@@ -135,7 +150,9 @@ class TicTacToeGame {
     play() {
         this.turn = 1;
         this.winner = null;
-        this.squares = this.squareEls.map(el => new Square(el));
+        //creating squares
+        // this.squares = this.squareEls.map(el => new Square(el));
+        this.squares = this.squareEls.map(el => new SymbolSquare(el));
         this.render();
     }
 
@@ -143,9 +160,8 @@ class TicTacToeGame {
     render() {
         // Square objects are responsible for rendering themselves
         this.squares.forEach(square => square.render());
-        // NEW CODE BELOW
         if (this.winner === 'T') {
-            this.messageElement.innerHTML = 'Rats, another tie!';
+            this.messageElement.innerHTML = "Cat's Game!";
         } else if (this.winner) {
             this.messageElement.innerHTML = `Player ${this.winner === 1 ? 1 : 2} Wins!`;
         } else {
@@ -155,11 +171,12 @@ class TicTacToeGame {
     getWinner() {
         // Shortcut variable that replaces board array with sqaure objects
         const combos = TicTacToeGame.winningCombos;
+        //cycling through all sqaures to see if it returns the absolute value of 3(-3 also returns as 3)
         for (let i = 0; i < combos.length; i++) {
             if (Math.abs(this.squares[combos[i][0]].value + this.squares[combos[i][1]].value + this.squares[combos[i][2]].value) === 3)
                 return this.squares[combos[i][0]].value;
         }
-        // Array.prototype.some iterator method!
+        // Array.prototype.some iterator method: tests whether at least one element in the array passes the test implemented by the provided function
         if (this.squares.some(square => square.value === null)) return null;
         return 'T';
     }
@@ -185,5 +202,5 @@ function initialize() {
 //   6.1) Do steps 4.1 (initialize the state variables) and 4.2 (render).
 
 
-
-///Used Jim Clarks Class lecture and Connect Four example to create this game
+//SOURCE
+///Used Jim Clarks 'Class' lecture and 'Connect Four' example to create this game
