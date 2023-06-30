@@ -79,9 +79,9 @@ class Square {
 
     static renderLookup =
         {
-            '1': 'black',
-            '-1': 'gold',
-            'null': '#f1e9e9',
+            '1': 'X',
+            '-1': 'O',
+            'null': ' ',
         };
     // {
     //     '1': "X",
@@ -93,22 +93,33 @@ class Square {
     //     this.domElement.style.backgroundColor = Square.renderLookup[this.value];
     // }
 
+    // render() {
+    //     this.domElement.accessKey = Square.renderLookup[this.value];
+
+    // render() {
+    //     this.domElement.className = Square.renderLookup[this.value];
+    // }
+
+    // render() {
+    //     this.domElement.dir = Square.renderLookup[this.value];
+    // }
     render() {
-        this.domElement.style.sy = Square.renderLookup[this.value];
+        this.domElement.innerHTML = Square.renderLookup[this.value];
     }
 }
-class SymbolSquare extends Square {
-    constructor() {
+// class SymbolSquare extends Square {
+//     constructor() {
 
-    }
+//     }
 
-}
+// }
 
 class TicTacToeGame {
     constructor(boardElement, messageElement) {
         //properties
         this.boardElement = boardElement;
         this.messageElement = messageElement;
+
         //square property needs to be an array of divs
         this.squareEls = [...boardElement.querySelectorAll('div')];
         this.boardElement.addEventListener('click', (evt) => {
@@ -145,14 +156,19 @@ class TicTacToeGame {
         [0, 4, 8],
         [2, 4, 6]
     ];
-
+    static renderLookup =
+        {
+            '1': 'X',
+            '-1': 'O',
+            'null': ' ',
+        };
     //new method
     play() {
         this.turn = 1;
         this.winner = null;
         //creating squares
         // this.squares = this.squareEls.map(el => new Square(el));
-        this.squares = this.squareEls.map(el => new SymbolSquare(el));
+        this.squares = this.squareEls.map(el => new Square(el));
         this.render();
     }
 
@@ -163,9 +179,11 @@ class TicTacToeGame {
         if (this.winner === 'T') {
             this.messageElement.innerHTML = "Cat's Game!";
         } else if (this.winner) {
-            this.messageElement.innerHTML = `Player ${this.winner === 1 ? 1 : 2} Wins!`;
+            //condition ? exprIfTrue : exprIfFalse
+            // this.messageElement.innerHTML = `Player ${this.winner === 1 ? 1 : 2} Wins!`
+            this.messageElement.innerHTML = `Player ${this.winner === 1 ? 1 : 2} Wins!`;;
         } else {
-            this.messageElement.innerHTML = `Player ${this.turn === 1 ? 1 : 2}'s Turn`;
+            this.messageElement.innerHTML = `Player ${this.turn === 1 ? 1 : 2} make a move`;
         }
     }
     getWinner() {
@@ -204,3 +222,4 @@ function initialize() {
 
 //SOURCE
 ///Used Jim Clarks 'Class' lecture and 'Connect Four' example to create this game
+//applied paper overlay in scss using code from: https://medium.com/@erikritter/css-snippets-add-a-texture-overlay-to-an-entire-webpage-b0bfdfd02c45
