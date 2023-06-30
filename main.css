@@ -1,0 +1,70 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    /* viewport units: vh (viewport height), vw, 50vmin (smallest between vh & vw) highly scalable page, window rezies accordingly */
+    height: 100vh;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1e9e9;
+}
+
+header {
+    font-size: 4vmin;
+    color: #171d21;
+    letter-spacing: 1vmin;
+    /* font-family: 'Hanalei Fill', cursive; */
+    /* font-family: 'Lacquer', cursive; */
+    font-family: 'Schoolbell', cursive;
+    ;
+}
+
+h1 {
+    color: #908c89;
+    font-size: 3vmin;
+    font-family: 'Lacquer', cursive;
+    /* font-family: 'Schoolbell', cursive; */
+
+}
+
+#board {
+    display: grid;
+    /* grid-area: 1/1/4/4; */
+    display: grid;
+    grid-template-columns: repeat(3, 10vmin);
+    grid-template-rows: repeat(3, 10vmin);
+    margin-top: 5vmin;
+    /* border: 10px solid #d02525 inset;
+  box-shadow: 5 px green inset; */
+    outline: 10px solid #f1e9e9;
+    outline-offset: -2px;
+}
+
+#board>div {
+    /* display: grid; */
+    /* grid-area: 1/1/4/4; */
+    /* grid-template-columns: 10px, 10px, 10px;
+  grid-template-rows: 10px, 10px, 10px; */
+    border: 0.1vmin solid #413e3e;
+    /* grid-gap: 1px; */
+}
+
+button {
+    margin-top: 4vmin;
+    padding: 1vmin;
+    font-size: 2vmin;
+    border-radius: 1vmin;
+    border: 0.1vmin solid grey;
+    color: gray;
+    font-family: 'Lacquer', cursive;
+}
+
+button:hover {
+    color: white;
+    background-color: black;
+}
